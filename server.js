@@ -13,6 +13,7 @@ var User = require("/models/users");
 
 
 var app = express();
+
 mongoose.connect("mongodb://wisecomm:Password@123@ds139619.mlab.com:39619/wisecomm");
 
 app.use(morgan('dev'));
@@ -41,8 +42,6 @@ app.put('/users/signin', function (req, res) {
             res.status(400).send("No user found");
         }
     });
-    //res.status(200);
-    //res.send("ok");
 });
 
 
@@ -60,8 +59,8 @@ app.post('/users', function (req, res) {
         }
 
     })
-    res.status(200);
-    res.send('Saved');
+    res.status(200).send("Saved");
+    ;
 });
 
 
