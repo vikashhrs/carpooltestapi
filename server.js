@@ -19,6 +19,10 @@ mongoose.connect("mongodb://wisecomm:Password@123@ds139619.mlab.com:39619/wiseco
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 
+app.get("/",function (req,res) {
+    res,send("The apis are running");
+})
+
 app.put('/users/signin', function (req, res) {
     if (!req.body) {
         console.log("parameters received");
