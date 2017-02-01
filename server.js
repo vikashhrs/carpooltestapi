@@ -55,9 +55,6 @@ app.post('/users', function (req, res) {
     req.body.user.password = bcrypt.hashSync(req.body.user.password, bcrypt.genSaltSync(9));
     //console.log(req.body);
     var user = new User(req.body.user);
-    /*var newUser = req.body.user
-     newUser.password = bcrypt.hashSync(req.body.user.password,bcrypt.genSaltSync(9));
-     var user = new User(newUser);*/
     user.save(function (err) {
         if (err) {
             throw err;
@@ -65,7 +62,6 @@ app.post('/users', function (req, res) {
 
     })
     res.status(200).send("Saved");
-    ;
 });
 
 
