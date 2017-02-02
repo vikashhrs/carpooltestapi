@@ -25,12 +25,15 @@ app.get("/",function (req,res) {
 })
 
 app.put('/users/signin', function (req, res) {
+    /*
+    Api for login functinality
+     */
     if (!req.body) {
         console.log("parameters received");
     }
     console.log(req.body);
-    console.log(req.body.email);
-    User.findOne({email: req.body.email}, function (err, user) {
+    console.log(req.body.empID);
+    User.findOne({empID: req.body.empID}, function (err, user) {
         console.log(err);
         console.log(user);
         if (err)
@@ -51,6 +54,9 @@ app.put('/users/signin', function (req, res) {
 
 
 app.post('/users', function (req, res) {
+    /*
+    Api for new user registration
+     */
     console.log(req.body.user);
     req.body.user.password = bcrypt.hashSync(req.body.user.password, bcrypt.genSaltSync(9));
     //console.log(req.body);
@@ -61,21 +67,27 @@ app.post('/users', function (req, res) {
      var user = new User(newUser);*/
    user.save(function (err) {
         if (err) {
-            throw err;
+            //throw err;
+            res.status(500).send("Cannot Register User");
+        }else {
+            res.status(200);
+            res.send('Saved');
         }
 
     })
-    res.status(200);
-    res.send('Saved');
+
 });
 
 
 
 app.post('/check/users', function (req, res) {
+    /*
+    Api for checking if a user already exists
+     */
     console.log(req.body);
-    User.findOne({email : req.body.email},function (err,user) {
+    User.findOne({empID : req.body.empID},function (err,user) {
         if(err)
-            throw err;
+            res.status(500).send({status : "Server error"});
         if(user){
             res.status(400).send({status : "present"});
         }
@@ -85,6 +97,40 @@ app.post('/check/users', function (req, res) {
 
     })
 });
+
+
+app.post("/users/checkpoints",function (req,res) {
+    /*
+    Api for adding checkpoints for a coresspondimg user
+     */
+    console.log(req.body);
+    console.log(req.headers.authorization);
+    var user = jwt.decode(req.headers.authorization, JWT_SECRET);
+    console.log(user);
+    //console.log(contact);
+    User.findOne({empID : user.empID},function (err,user) {
+        if(err){
+            res.status(500).send({status : "Server error"});
+        }
+        if(user){
+            //user.checkpoints.push(req.body.checkpoint);
+            for( var i = 0;i<Object.keys(req.body.checkpoints).length;i++){
+                user.checkpoints.push(req.body.checkpoints[i]);
+            }
+            user.save(function (err) {
+                if(err)
+                    res.status(500).send({status : "Server error"});
+                else
+                    res.send({message: "Data Added"})
+            })
+        }
+        if(!user){
+            res.status(400).send({status : "No user found"});
+        }
+    });
+
+    //res.send({message: "Data Added"})
+})
 
 app.listen(PORT,function () {
     console.log("Server running on port 3000");

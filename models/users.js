@@ -5,7 +5,8 @@ var mongoose = require('mongoose');
 var UserSchema = mongoose.Schema({
     empID : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
     name : {
         type : String,
@@ -17,7 +18,8 @@ var UserSchema = mongoose.Schema({
     password : {
         type : String,
         required : true
-    }
+    },
+    checkpoints : []
 
 });
 module.exports = mongoose.model('User',UserSchema);
