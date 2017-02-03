@@ -10,6 +10,7 @@ var JWT_SECRET = "24446666688888889";
 var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt-nodejs');
 var User = require("./models/users");
+var CheckPoint  = require("./models/checkpoints");
 
 
 var app = express();
@@ -130,6 +131,18 @@ app.post("/users/checkpoints",function (req,res) {
     });
 
     //res.send({message: "Data Added"})
+});
+
+app.post("/add/checkpoints",function (req,res) {
+    console.log(req.body);
+    var checkPoint = new CheckPoint(req.body.checkPoint);
+    checkPoint.save(function (err) {
+        if(err)
+            res.status(500).send(err);
+        else
+            res.status(200).send(req.body);
+    })
+
 })
 
 app.listen(PORT,function () {
