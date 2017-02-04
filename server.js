@@ -11,12 +11,13 @@ var bodyParser = require('body-parser');
 var bcrypt = require('bcrypt-nodejs');
 var User = require("./models/users");
 var CheckPoint  = require("./models/checkpoints");
+var LiveRide = require("./models/liveride");
 
 
 var app = express();
 
-mongoose.connect("mongodb://wisecomm:wisecomm@ds139619.mlab.com:39619/wisecomm");
-//mongoose.connect("mongodb://localhost:27017/carpool");
+//mongoose.connect("mongodb://wisecomm:wisecomm@ds139619.mlab.com:39619/wisecomm");
+mongoose.connect("mongodb://localhost:27017/carpool");
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -134,6 +135,18 @@ app.post("/users/checkpoints",function (req,res) {
 });
 
 app.post("/add/checkpoints",function (req,res) {
+    /*
+    sample data
+    "checkPoint" : {
+         "checkPointName" : "kondapur",
+         "latLng" : {
+         "lat" : "123",
+         "lng" : "321"
+          }
+
+     }
+
+     */
     console.log(req.body);
     var checkPoint = new CheckPoint(req.body.checkPoint);
     checkPoint.save(function (err) {
@@ -143,7 +156,37 @@ app.post("/add/checkpoints",function (req,res) {
             res.status(200).send(req.body);
     })
 
-})
+});
+
+
+app.post("/set/liveride",function(req,res){
+    console.log(req.body);
+    req.body.startTime  = new Date(req.body.startTime);
+    //console.log(req.headers.authorization);
+    var user = jwt.decode(req.headers.authorization, JWT_SECRET);
+    console.log(user);
+    User.findOne({empID : user.empID},function (err,user) {
+        if(err){
+            res.status(500).send({status : "Server error"});
+        }
+        if(user){
+            //user.checkpoints.push(req.body.checkpoint);
+            var liveRide = new LiveRide(req.body);
+            liveRide.save(function(err){
+                if(err)
+                    res.status(500).send(err);
+                else
+                    res.status(200).send("liveride");
+
+
+            })
+        }
+        if(!user){
+            res.status(405).send({status : "No user found"});
+        }
+    });
+    //res.send("liveride");
+});
 
 app.listen(PORT,function () {
     console.log("Server running on port 3000");
