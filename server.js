@@ -70,10 +70,10 @@ app.post('/users', function (req, res) {
    user.save(function (err) {
         if (err) {
             //throw err;
-            res.status(500).send("Cannot Register User");
+            res.status(500).send({status : "Unable To Register"});
         }else {
             res.status(200);
-            res.send('Saved');
+            res.send({status : "Registered"});
         }
 
     })
