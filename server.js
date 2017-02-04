@@ -45,11 +45,11 @@ app.put('/users/signin', function (req, res) {
                 var token = jwt.encode(user, JWT_SECRET);
                 res.status(200).send({token: token, name: user.name});
             } else {
-                res.status(400).send("Incorrect password");
+                res.status(400).send({status :"Incorrect password"});
             }
         }
         if (!user) {
-            res.status(400).send("No user found");
+            res.status(400).send({status : "No user found"});
         }
     });
 });
@@ -151,7 +151,7 @@ app.post("/add/checkpoints",function (req,res) {
     var checkPoint = new CheckPoint(req.body.checkPoint);
     checkPoint.save(function (err) {
         if(err)
-            res.status(500).send(err);
+            res.status(500).send({status : err});
         else
             res.status(200).send(req.body);
     })
@@ -174,9 +174,9 @@ app.post("/set/liveride",function(req,res){
             var liveRide = new LiveRide(req.body);
             liveRide.save(function(err){
                 if(err)
-                    res.status(500).send(err);
+                    res.status(500).send({status :err});
                 else
-                    res.status(200).send("liveride");
+                    res.status(200).send({status :"liveride"});
 
 
             })
