@@ -16,8 +16,8 @@ var LiveRide = require("./models/liveride");
 
 var app = express();
 
-//mongoose.connect("mongodb://wisecomm:wisecomm@ds139619.mlab.com:39619/wisecomm");
-mongoose.connect("mongodb://localhost:27017/carpool");
+mongoose.connect("mongodb://wisecomm:wisecomm@ds139619.mlab.com:39619/wisecomm");
+//mongoose.connect("mongodb://localhost:27017/carpool");
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
